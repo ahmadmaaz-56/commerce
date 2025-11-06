@@ -1,0 +1,3116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FashionHub - Complete E-Commerce</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/next"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base Styles */
+        :root {
+            --primary: #4a6bff;
+            --secondary: #ff6b6b;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --gray: #6c757d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: var(--secondary);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: var(--primary);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            padding: 0 1rem;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.8rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #3a5bef;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid white;
+            margin-left: 1rem;
+        }
+        
+        .btn-outline:hover {
+            background-color: white;
+            color: var(--primary);
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary);
+            margin: 0.5rem auto;
+        }
+        
+        /* Product Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .product-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .product-image {
+            position: relative;
+            height: 250px;
+            overflow: hidden;
+        }
+        
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: var(--secondary);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .product-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .product-action-btn {
+            background-color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .product-action-btn:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .product-info {
+            padding: 1.5rem;
+        }
+        
+        .product-category {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .product-price {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .current-price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .old-price {
+            font-size: 0.9rem;
+            color: var(--gray);
+            text-decoration: line-through;
+        }
+        
+        .product-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .stars {
+            color: #ffc107;
+            margin-right: 0.5rem;
+        }
+        
+        .rating-count {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        .product-variants {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .variant-btn {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .variant-btn:hover, .variant-btn.active {
+            border-color: var(--primary);
+        }
+        
+        .color-red { background-color: #ff6b6b; }
+        .color-blue { background-color: #4a6bff; }
+        .color-green { background-color: #28a745; }
+        .color-black { background-color: #2c3e50; }
+        
+        .size-btn {
+            padding: 0.2rem 0.5rem;
+            border: 1px solid #ddd;
+            background-color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+        
+        .size-btn:hover, .size-btn.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .add-to-cart {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .add-to-cart:hover {
+            background-color: #3a5bef;
+        }
+        
+        /* Cart Sidebar */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background-color: white;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s;
+            z-index: 1001;
+            overflow-y: auto;
+        }
+        
+        .cart-sidebar.open {
+            right: 0;
+        }
+        
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cart-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .close-cart {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        .cart-items {
+            padding: 1.5rem;
+        }
+        
+        .cart-item {
+            display: flex;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cart-item-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 1rem;
+        }
+        
+        .cart-item-details {
+            flex: 1;
+        }
+        
+        .cart-item-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .cart-item-price {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .quantity-btn {
+            width: 25px;
+            height: 25px;
+            border: 1px solid #ddd;
+            background-color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .quantity-input {
+            width: 40px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 0.2rem;
+        }
+        
+        .remove-item {
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .cart-summary {
+            padding: 1.5rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .cart-totals {
+            margin-bottom: 1.5rem;
+        }
+        
+        .cart-total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .cart-total-label {
+            color: var(--gray);
+        }
+        
+        .cart-total-value {
+            font-weight: 600;
+        }
+        
+        .grand-total {
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+        
+        .checkout-btn {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--success);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .checkout-btn:hover {
+            background-color: #218838;
+        }
+        
+        .cart-empty {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray);
+        }
+        
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Login/Register Modal */
+        .auth-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1002;
+            width: 400px;
+            max-width: 90%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        
+        .auth-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .auth-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .auth-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .close-auth {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .auth-tab {
+            padding: 0.5rem 1rem;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .auth-tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .form-label {
+            font-weight: 500;
+        }
+        
+        .form-input {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .auth-submit {
+            padding: 0.8rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .auth-submit:hover {
+            background-color: #3a5bef;
+        }
+        
+        .auth-footer {
+            text-align: center;
+            margin-top: 1rem;
+            color: var(--gray);
+        }
+        
+        .auth-switch {
+            color: var(--primary);
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .social-login {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+        
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.8rem;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .facebook-btn {
+            background-color: #3b5998;
+            color: white;
+            border: none;
+        }
+        
+        .google-btn {
+            background-color: white;
+            color: var(--dark);
+            border: 1px solid #ddd;
+        }
+        
+        /* Wishlist */
+        .wishlist-icon {
+            position: relative;
+        }
+        
+        .wishlist-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--secondary);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        /* Search */
+        .search-container {
+            position: relative;
+            margin: 2rem 0;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 1rem;
+            padding-left: 3rem;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            font-size: 1rem;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .filter-select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 0 1.5rem;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-col h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        .footer-col h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--primary);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .social-link:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .newsletter-input {
+            width: 100%;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+        
+        .newsletter-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .newsletter-btn:hover {
+            background-color: #3a5bef;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .header-container {
+                padding: 1rem;
+            }
+            
+            nav ul {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background-color: white;
+                flex-direction: column;
+                align-items: center;
+                padding-top: 2rem;
+                transition: left 0.3s;
+            }
+            
+            nav ul.active {
+                left: 0;
+            }
+            
+            nav ul li {
+                margin: 1rem 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .cart-sidebar {
+                width: 350px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero {
+                height: 50vh;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .btn {
+                padding: 0.6rem 1.5rem;
+            }
+            
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+            
+            .cart-sidebar {
+                width: 100%;
+                max-width: 350px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero {
+                height: 40vh;
+            }
+            
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .btn-group {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .btn-outline {
+                margin-left: 0;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .auth-modal {
+                width: 90%;
+                padding: 1.5rem;
+            }
+        }
+        
+        /* Image Zoom */
+        .image-zoom-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1003;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        
+        .image-zoom-container.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .zoomed-image {
+            max-width: 90%;
+            max-height: 90%;
+        }
+        
+        .close-zoom {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+        
+        /* Product Gallery */
+        .product-gallery {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .gallery-thumbnail {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .gallery-thumbnail:hover, .gallery-thumbnail.active {
+            border-color: var(--primary);
+        }
+        
+        /* Review Section */
+        .reviews-section {
+            margin-top: 3rem;
+        }
+        
+        .review-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .review-author {
+            font-weight: 600;
+        }
+        
+        .review-date {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .review-rating {
+            color: #ffc107;
+            margin-bottom: 0.5rem;
+        }
+        
+        .review-form {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .rating-input {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .rating-star {
+            font-size: 1.5rem;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .rating-star.active {
+            color: #ffc107;
+        }
+        
+        .review-textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 100px;
+            margin-bottom: 1rem;
+            resize: vertical;
+        }
+        
+        .submit-review {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .submit-review:hover {
+            background-color: #3a5bef;
+        }
+        
+        /* Checkout Steps */
+        .checkout-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .checkout-steps::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #ddd;
+            z-index: 1;
+        }
+        
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #ddd;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .step.active .step-number {
+            background-color: var(--primary);
+        }
+        
+        .step.completed .step-number {
+            background-color: var(--success);
+        }
+        
+        .step-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .step.active .step-label {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .step.completed .step-label {
+            color: var(--success);
+        }
+        
+        /* Checkout Form */
+        .checkout-form {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-section {
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .form-col {
+            flex: 1;
+        }
+        
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .payment-method {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .payment-method:hover {
+            border-color: var(--primary);
+        }
+        
+        .payment-method.active {
+            border-color: var(--primary);
+            background-color: rgba(74, 107, 255, 0.05);
+        }
+        
+        .payment-icon {
+            margin-right: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .payment-details {
+            margin-top: 1rem;
+            padding: 1rem;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        
+        .checkout-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .back-btn {
+            padding: 0.8rem 1.5rem;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background-color: #e9ecef;
+        }
+        
+        .next-btn {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .next-btn:hover {
+            background-color: #3a5bef;
+        }
+        
+        /* Order Summary */
+        .order-summary {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .summary-total {
+            font-weight: 600;
+            font-size: 1.1rem;
+            border-top: 1px solid #eee;
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+        
+        /* Coupon Code */
+        .coupon-code {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .coupon-input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .apply-coupon {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .apply-coupon:hover {
+            background-color: #3a5bef;
+        }
+        
+        /* Order Complete */
+        .order-complete {
+            text-align: center;
+            padding: 3rem 0;
+        }
+        
+        .complete-icon {
+            font-size: 5rem;
+            color: var(--success);
+            margin-bottom: 1.5rem;
+        }
+        
+        .complete-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .complete-text {
+            color: var(--gray);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Account Pages */
+        .account-container {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .account-sidebar {
+            width: 250px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .account-menu {
+            list-style: none;
+        }
+        
+        .account-menu li {
+            margin-bottom: 1rem;
+        }
+        
+        .account-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--dark);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .account-menu a:hover, .account-menu a.active {
+            color: var(--primary);
+        }
+        
+        .account-content {
+            flex: 1;
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .account-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .order-card {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .order-id {
+            font-weight: 600;
+        }
+        
+        .order-date {
+            color: var(--gray);
+        }
+        
+        .order-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-processing {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-shipped {
+            background-color: #c3e6cb;
+            color: #155724;
+        }
+        
+        .status-delivered {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .order-items {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .order-item-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        
+        .order-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .order-total {
+            font-weight: 600;
+        }
+        
+        .view-order {
+            padding: 0.5rem 1rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .view-order:hover {
+            background-color: #3a5bef;
+        }
+        
+        /* Responsive Tables */
+        .responsive-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .responsive-table th, .responsive-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .responsive-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        /* Responsive Account */
+        @media (max-width: 768px) {
+            .account-container {
+                flex-direction: column;
+            }
+            
+            .account-sidebar {
+                width: 100%;
+                margin-bottom: 2rem;
+            }
+        }
+        
+        /* Loading Spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // React Components
+        const { useState, useEffect, useRef } = React;
+
+        // Product Data
+        const productsData = [
+            {
+                id: 1,
+                name: "Classic White T-Shirt",
+                category: "T-Shirts",
+                price: 24.99,
+                oldPrice: 29.99,
+                description: "Comfortable cotton t-shirt perfect for everyday wear.",
+                images: [
+                    "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1527719327859-c6ce80353573?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                ],
+                colors: ["red", "blue", "black"],
+                sizes: ["S", "M", "L", "XL"],
+                rating: 4.5,
+                reviews: 24,
+                stock: 10
+            },
+            {
+                id: 2,
+                name: "Slim Fit Jeans",
+                category: "Jeans",
+                price: 49.99,
+                oldPrice: 59.99,
+                description: "Stylish slim fit jeans made with premium denim.",
+                images: [
+                    "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                ],
+                colors: ["blue", "black"],
+                sizes: ["28", "30", "32", "34"],
+                rating: 4.2,
+                reviews: 18,
+                stock: 5
+            },
+            {
+                id: 3,
+                name: "Summer Floral Dress",
+                category: "Dresses",
+                price: 39.99,
+                description: "Lightweight floral dress perfect for warm weather.",
+                images: [
+                    "https://images.unsplash.com/photo-1539008835657-9e8e9680e956?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1551232864-3f0890e580d9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1551232864-3f0890e580d9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                ],
+                colors: ["red", "green"],
+                sizes: ["S", "M", "L"],
+                rating: 4.8,
+                reviews: 32,
+                stock: 8
+            },
+            {
+                id: 4,
+                name: "Casual Blazer",
+                category: "Jackets",
+                price: 79.99,
+                oldPrice: 99.99,
+                description: "Versatile blazer that can be dressed up or down.",
+                images: [
+                    "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1554412933-514a83d2f3c8?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1551232864-3f0890e580d9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                ],
+                colors: ["black", "blue"],
+                sizes: ["M", "L", "XL"],
+                rating: 4.3,
+                reviews: 15,
+                stock: 3
+            },
+            {
+                id: 5,
+                name: "Sports Running Shoes",
+                category: "Shoes",
+                price: 89.99,
+                description: "Comfortable running shoes with great support.",
+                images: [
+                    "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1600269452121-4f2416e55c28?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1551232864-3f0890e580d9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                ],
+                colors: ["black", "blue", "red"],
+                sizes: ["8", "9", "10", "11"],
+                rating: 4.7,
+                reviews: 42,
+                stock: 12
+            },
+            {
+                id: 6,
+                name: "Wool Winter Hat",
+                category: "Accessories",
+                price: 19.99,
+                description: "Warm wool hat for cold winter days.",
+                images: [
+                    "https://images.unsplash.com/photo-1521369909029-1af5c38c0409?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1534215754734-18e55d13e346?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1551232864-3f0890e580d9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                ],
+                colors: ["black", "red", "blue"],
+                sizes: ["One Size"],
+                rating: 4.0,
+                reviews: 8,
+                stock: 20
+            }
+        ];
+
+        // Reviews Data
+        const reviewsData = [
+            {
+                id: 1,
+                productId: 1,
+                author: "John Doe",
+                rating: 5,
+                date: "2023-05-15",
+                comment: "Great t-shirt! Fits perfectly and the material is very comfortable."
+            },
+            {
+                id: 2,
+                productId: 1,
+                author: "Jane Smith",
+                rating: 4,
+                date: "2023-04-22",
+                comment: "Nice quality but the color was slightly different than expected."
+            },
+            {
+                id: 3,
+                productId: 2,
+                author: "Mike Johnson",
+                rating: 5,
+                date: "2023-06-10",
+                comment: "Perfect fit and very comfortable. Highly recommend!"
+            }
+        ];
+
+        // App Component
+        function App() {
+            const [cart, setCart] = useState([]);
+            const [wishlist, setWishlist] = useState([]);
+            const [isCartOpen, setIsCartOpen] = useState(false);
+            const [isAuthOpen, setIsAuthOpen] = useState(false);
+            const [authTab, setAuthTab] = useState('login');
+            const [isMenuOpen, setIsMenuOpen] = useState(false);
+            const [searchQuery, setSearchQuery] = useState('');
+            const [selectedCategory, setSelectedCategory] = useState('all');
+            const [priceRange, setPriceRange] = useState([0, 100]);
+            const [ratingFilter, setRatingFilter] = useState(0);
+            const [isZoomOpen, setIsZoomOpen] = useState(false);
+            const [zoomedImage, setZoomedImage] = useState('');
+            const [currentPage, setCurrentPage] = useState('home');
+            const [selectedProduct, setSelectedProduct] = useState(null);
+            const [checkoutStep, setCheckoutStep] = useState(1);
+            const [paymentMethod, setPaymentMethod] = useState('');
+            const [isOrderComplete, setIsOrderComplete] = useState(false);
+            const [accountTab, setAccountTab] = useState('orders');
+            const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+            // Load cart and wishlist from localStorage on component mount
+            useEffect(() => {
+                const savedCart = localStorage.getItem('cart');
+                const savedWishlist = localStorage.getItem('wishlist');
+                
+                if (savedCart) setCart(JSON.parse(savedCart));
+                if (savedWishlist) setWishlist(JSON.parse(savedWishlist));
+            }, []);
+
+            // Save cart and wishlist to localStorage when they change
+            useEffect(() => {
+                localStorage.setItem('cart', JSON.stringify(cart));
+                localStorage.setItem('wishlist', JSON.stringify(wishlist));
+            }, [cart, wishlist]);
+
+            // Calculate cart total
+            const cartTotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+
+            // Filter products based on search and filters
+            const filteredProducts = productsData.filter(product => {
+                const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                     product.description.toLowerCase().includes(searchQuery.toLowerCase());
+                const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
+                const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
+                const matchesRating = product.rating >= ratingFilter;
+                
+                return matchesSearch && matchesCategory && matchesPrice && matchesRating;
+            });
+
+            // Add to cart function
+            const addToCart = (product, selectedColor, selectedSize) => {
+                const existingItem = cart.find(item => 
+                    item.id === product.id && 
+                    item.color === selectedColor && 
+                    item.size === selectedSize
+                );
+
+                if (existingItem) {
+                    setCart(cart.map(item =>
+                        item.id === product.id && item.color === selectedColor && item.size === selectedSize
+                            ? { ...item, quantity: item.quantity + 1 }
+                            : item
+                    ));
+                } else {
+                    setCart([...cart, {
+                        ...product,
+                        color: selectedColor,
+                        size: selectedSize,
+                        quantity: 1
+                    }]);
+                }
+            };
+
+            // Remove from cart function
+            const removeFromCart = (itemId, color, size) => {
+                setCart(cart.filter(item => 
+                    !(item.id === itemId && item.color === color && item.size === size)
+                ));
+            };
+
+            // Update quantity function
+            const updateQuantity = (itemId, color, size, newQuantity) => {
+                if (newQuantity < 1) return;
+                
+                setCart(cart.map(item =>
+                    item.id === itemId && item.color === color && item.size === size
+                        ? { ...item, quantity: newQuantity }
+                        : item
+                ));
+            };
+
+            // Add to wishlist function
+            const addToWishlist = (productId) => {
+                if (!wishlist.includes(productId)) {
+                    setWishlist([...wishlist, productId]);
+                }
+            };
+
+            // Remove from wishlist function
+            const removeFromWishlist = (productId) => {
+                setWishlist(wishlist.filter(id => id !== productId));
+            };
+
+            // Toggle wishlist item
+            const toggleWishlist = (productId) => {
+                if (wishlist.includes(productId)) {
+                    removeFromWishlist(productId);
+                } else {
+                    addToWishlist(productId);
+                }
+            };
+
+            // Handle checkout
+            const handleCheckout = () => {
+                // In a real app, this would process the payment
+                setCheckoutStep(4);
+                setIsOrderComplete(true);
+                setCart([]);
+            };
+
+            // Render stars for ratings
+            const renderStars = (rating) => {
+                return Array(5).fill(0).map((_, i) => (
+                    <i 
+                        key={i} 
+                        className={`fas fa-star ${i < Math.floor(rating) ? 'active' : ''}`}
+                    ></i>
+                ));
+            };
+
+            // Render product variants
+            const renderColorVariants = (colors) => {
+                return colors.map(color => (
+                    <button 
+                        key={color}
+                        className={`variant-btn color-${color}`}
+                        title={color}
+                    ></button>
+                ));
+            };
+
+            const renderSizeVariants = (sizes) => {
+                return sizes.map(size => (
+                    <button key={size} className="size-btn">{size}</button>
+                ));
+            };
+
+            // Render product gallery
+            const renderProductGallery = (images) => {
+                return images.map((image, index) => (
+                    <img 
+                        key={index}
+                        src={image}
+                        alt={`Product ${index + 1}`}
+                        className="gallery-thumbnail"
+                        onClick={() => {
+                            setZoomedImage(image);
+                            setIsZoomOpen(true);
+                        }}
+                    />
+                ));
+            };
+
+            // Render product reviews
+            const renderReviews = (productId) => {
+                const productReviews = reviewsData.filter(review => review.productId === productId);
+                
+                return productReviews.map(review => (
+                    <div key={review.id} className="review-card">
+                        <div className="review-header">
+                            <span className="review-author">{review.author}</span>
+                            <span className="review-date">{review.date}</span>
+                        </div>
+                        <div className="review-rating">
+                            {renderStars(review.rating)}
+                        </div>
+                        <p>{review.comment}</p>
+                    </div>
+                ));
+            };
+
+            // Render cart items
+            const renderCartItems = () => {
+                if (cart.length === 0) {
+                    return <div className="cart-empty">Your cart is empty</div>;
+                }
+
+                return cart.map((item, index) => (
+                    <div key={index} className="cart-item">
+                        <img src={item.images[0]} alt={item.name} className="cart-item-img" />
+                        <div className="cart-item-details">
+                            <div className="cart-item-title">{item.name}</div>
+                            <div className="cart-item-price">${item.price.toFixed(2)}</div>
+                            <div>Color: {item.color}, Size: {item.size}</div>
+                            <div className="cart-item-quantity">
+                                <button 
+                                    className="quantity-btn"
+                                    onClick={() => updateQuantity(item.id, item.color, item.size, item.quantity - 1)}
+                                >-</button>
+                                <input 
+                                    type="number" 
+                                    className="quantity-input"
+                                    value={item.quantity}
+                                    onChange={(e) => updateQuantity(item.id, item.color, item.size, parseInt(e.target.value))}
+                                    min="1"
+                                />
+                                <button 
+                                    className="quantity-btn"
+                                    onClick={() => updateQuantity(item.id, item.color, item.size, item.quantity + 1)}
+                                >+</button>
+                            </div>
+                            <button 
+                                className="remove-item"
+                                onClick={() => removeFromCart(item.id, item.color, item.size)}
+                            >
+                                Remove
+                            </button>
+                        </div>
+                    </div>
+                ));
+            };
+
+            // Render checkout steps
+            const renderCheckoutSteps = () => {
+                return (
+                    <div className="checkout-steps">
+                        <div className={`step ${checkoutStep >= 1 ? 'active' : ''} ${checkoutStep > 1 ? 'completed' : ''}`}>
+                            <div className="step-number">{checkoutStep > 1 ? <i className="fas fa-check"></i> : '1'}</div>
+                            <div className="step-label">Information</div>
+                        </div>
+                        <div className={`step ${checkoutStep >= 2 ? 'active' : ''} ${checkoutStep > 2 ? 'completed' : ''}`}>
+                            <div className="step-number">{checkoutStep > 2 ? <i className="fas fa-check"></i> : '2'}</div>
+                            <div className="step-label">Shipping</div>
+                        </div>
+                        <div className={`step ${checkoutStep >= 3 ? 'active' : ''} ${checkoutStep > 3 ? 'completed' : ''}`}>
+                            <div className="step-number">{checkoutStep > 3 ? <i className="fas fa-check"></i> : '3'}</div>
+                            <div className="step-label">Payment</div>
+                        </div>
+                        <div className={`step ${checkoutStep >= 4 ? 'active' : ''}`}>
+                            <div className="step-number">4</div>
+                            <div className="step-label">Complete</div>
+                        </div>
+                    </div>
+                );
+            };
+
+            // Render payment methods
+            const renderPaymentMethods = () => {
+                return (
+                    <div className="payment-methods">
+                        <div 
+                            className={`payment-method ${paymentMethod === 'credit' ? 'active' : ''}`}
+                            onClick={() => setPaymentMethod('credit')}
+                        >
+                            <i className="fas fa-credit-card payment-icon"></i>
+                            <span>Credit Card</span>
+                        </div>
+                        <div 
+                            className={`payment-method ${paymentMethod === 'paypal' ? 'active' : ''}`}
+                            onClick={() => setPaymentMethod('paypal')}
+                        >
+                            <i className="fab fa-paypal payment-icon"></i>
+                            <span>PayPal</span>
+                        </div>
+                    </div>
+                );
+            };
+
+            // Render account orders
+            const renderAccountOrders = () => {
+                const orders = [
+                    {
+                        id: 'ORD-12345',
+                        date: '2023-06-15',
+                        status: 'delivered',
+                        items: [
+                            { image: productsData[0].images[0], name: productsData[0].name, quantity: 1 },
+                            { image: productsData[1].images[0], name: productsData[1].name, quantity: 2 }
+                        ],
+                        total: 124.97
+                    },
+                    {
+                        id: 'ORD-12344',
+                        date: '2023-05-28',
+                        status: 'shipped',
+                        items: [
+                            { image: productsData[2].images[0], name: productsData[2].name, quantity: 1 }
+                        ],
+                        total: 39.99
+                    },
+                    {
+                        id: 'ORD-12343',
+                        date: '2023-05-10',
+                        status: 'processing',
+                        items: [
+                            { image: productsData[4].images[0], name: productsData[4].name, quantity: 1 },
+                            { image: productsData[5].images[0], name: productsData[5].name, quantity: 1 }
+                        ],
+                        total: 109.98
+                    }
+                ];
+
+                return orders.map(order => (
+                    <div key={order.id} className="order-card">
+                        <div className="order-header">
+                            <div>
+                                <span className="order-id">Order #{order.id}</span>
+                                <span className="order-date"> - {order.date}</span>
+                            </div>
+                            <span className={`order-status status-${order.status}`}>
+                                {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                            </span>
+                        </div>
+                        <div className="order-items">
+                            {order.items.map((item, index) => (
+                                <img 
+                                    key={index}
+                                    src={item.image}
+                                    alt={item.name}
+                                    className="order-item-img"
+                                    title={`${item.name} (Qty: ${item.quantity})`}
+                                />
+                            ))}
+                        </div>
+                        <div className="order-footer">
+                            <span className="order-total">Total: ${order.total.toFixed(2)}</span>
+                            <button className="view-order">View Order</button>
+                        </div>
+                    </div>
+                ));
+            };
+
+            // Render current page content
+            const renderPageContent = () => {
+                switch (currentPage) {
+                    case 'home':
+                        return (
+                            <>
+                                <section className="hero">
+                                    <div className="hero-content">
+                                        <h1>Summer Collection 2023</h1>
+                                        <p>Discover our latest trends and styles for the season</p>
+                                        <div className="btn-group">
+                                            <a href="#shop" className="btn">Shop Now</a>
+                                            <button className="btn btn-outline">View Lookbook</button>
+                                        </div>
+                                    </div>
+                                </section>
+                                
+                                <div className="container">
+                                    <section id="featured" className="section">
+                                        <h2 className="section-title">Featured Products</h2>
+                                        <div className="products-grid">
+                                            {productsData.slice(0, 4).map(product => (
+                                                <ProductCard 
+                                                    key={product.id}
+                                                    product={product}
+                                                    onAddToCart={addToCart}
+                                                    onToggleWishlist={toggleWishlist}
+                                                    isInWishlist={wishlist.includes(product.id)}
+                                                    onViewProduct={() => {
+                                                        setSelectedProduct(product);
+                                                        setCurrentPage('product');
+                                                    }}
+                                                />
+                                            ))}
+                                        </div>
+                                    </section>
+                                </div>
+                            </>
+                        );
+                    case 'shop':
+                        return (
+                            <div className="container">
+                                <section id="shop" className="section">
+                                    <h2 className="section-title">All Products</h2>
+                                    
+                                    <div className="search-container">
+                                        <i className="fas fa-search search-icon"></i>
+                                        <input 
+                                            type="text" 
+                                            className="search-input"
+                                            placeholder="Search products..."
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                        />
+                                    </div>
+                                    
+                                    <div className="filters">
+                                        <div className="filter-group">
+                                            <label className="filter-label">Category</label>
+                                            <select 
+                                                className="filter-select"
+                                                value={selectedCategory}
+                                                onChange={(e) => setSelectedCategory(e.target.value)}
+                                            >
+                                                <option value="all">All Categories</option>
+                                                <option value="T-Shirts">T-Shirts</option>
+                                                <option value="Jeans">Jeans</option>
+                                                <option value="Dresses">Dresses</option>
+                                                <option value="Jackets">Jackets</option>
+                                                <option value="Shoes">Shoes</option>
+                                                <option value="Accessories">Accessories</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div className="filter-group">
+                                            <label className="filter-label">Price Range</label>
+                                            <select 
+                                                className="filter-select"
+                                                value={priceRange[1]}
+                                                onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
+                                            >
+                                                <option value="100">All Prices</option>
+                                                <option value="25">Under $25</option>
+                                                <option value="50">Under $50</option>
+                                                <option value="100">Under $100</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div className="filter-group">
+                                            <label className="filter-label">Minimum Rating</label>
+                                            <select 
+                                                className="filter-select"
+                                                value={ratingFilter}
+                                                onChange={(e) => setRatingFilter(parseInt(e.target.value))}
+                                            >
+                                                <option value="0">All Ratings</option>
+                                                <option value="4">4+ Stars</option>
+                                                <option value="3">3+ Stars</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="products-grid">
+                                        {filteredProducts.map(product => (
+                                            <ProductCard 
+                                                key={product.id}
+                                                product={product}
+                                                onAddToCart={addToCart}
+                                                onToggleWishlist={toggleWishlist}
+                                                isInWishlist={wishlist.includes(product.id)}
+                                                onViewProduct={() => {
+                                                    setSelectedProduct(product);
+                                                    setCurrentPage('product');
+                                                }}
+                                            />
+                                        ))}
+                                    </div>
+                                </section>
+                            </div>
+                        );
+                    case 'product':
+                        return selectedProduct && (
+                            <div className="container">
+                                <section className="section">
+                                    <button 
+                                        className="btn"
+                                        onClick={() => setCurrentPage('shop')}
+                                        style={{ marginBottom: '1rem' }}
+                                    >
+                                        <i className="fas fa-arrow-left"></i> Back to Shop
+                                    </button>
+                                    
+                                    <div className="product-details">
+                                        <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+                                            <div style={{ flex: '1', minWidth: '300px' }}>
+                                                <img 
+                                                    src={selectedProduct.images[0]} 
+                                                    alt={selectedProduct.name}
+                                                    style={{ width: '100%', borderRadius: '8px', cursor: 'zoom-in' }}
+                                                    onClick={() => {
+                                                        setZoomedImage(selectedProduct.images[0]);
+                                                        setIsZoomOpen(true);
+                                                    }}
+                                                />
+                                                <div className="product-gallery">
+                                                    {renderProductGallery(selectedProduct.images)}
+                                                </div>
+                                            </div>
+                                            
+                                            <div style={{ flex: '1', minWidth: '300px' }}>
+                                                <h2>{selectedProduct.name}</h2>
+                                                <div className="product-rating">
+                                                    <div className="stars">
+                                                        {renderStars(selectedProduct.rating)}
+                                                    </div>
+                                                    <span className="rating-count">({selectedProduct.reviews} reviews)</span>
+                                                </div>
+                                                
+                                                <div style={{ margin: '1.5rem 0' }}>
+                                                    <span className="current-price" style={{ fontSize: '1.5rem' }}>
+                                                        ${selectedProduct.price.toFixed(2)}
+                                                    </span>
+                                                    {selectedProduct.oldPrice && (
+                                                        <span className="old-price" style={{ marginLeft: '0.5rem' }}>
+                                                            ${selectedProduct.oldPrice.toFixed(2)}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                
+                                                <p style={{ marginBottom: '1.5rem' }}>{selectedProduct.description}</p>
+                                                
+                                                <div style={{ marginBottom: '1.5rem' }}>
+                                                    <h3 style={{ marginBottom: '0.5rem' }}>Colors</h3>
+                                                    <div className="product-variants">
+                                                        {renderColorVariants(selectedProduct.colors)}
+                                                    </div>
+                                                </div>
+                                                
+                                                <div style={{ marginBottom: '1.5rem' }}>
+                                                    <h3 style={{ marginBottom: '0.5rem' }}>Sizes</h3>
+                                                    <div className="product-variants">
+                                                        {renderSizeVariants(selectedProduct.sizes)}
+                                                    </div>
+                                                </div>
+                                                
+                                                <button 
+                                                    className="add-to-cart"
+                                                    style={{ width: '100%' }}
+                                                    onClick={() => addToCart(selectedProduct, selectedProduct.colors[0], selectedProduct.sizes[0])}
+                                                >
+                                                    Add to Cart
+                                                </button>
+                                                
+                                                <div style={{ marginTop: '1rem', display: 'flex', gap: '1rem' }}>
+                                                    <button 
+                                                        className="product-action-btn"
+                                                        onClick={() => toggleWishlist(selectedProduct.id)}
+                                                    >
+                                                        <i className={`fas fa-heart ${wishlist.includes(selectedProduct.id) ? 'text-danger' : ''}`}></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="reviews-section">
+                                            <h3 style={{ marginBottom: '1.5rem' }}>Customer Reviews</h3>
+                                            {renderReviews(selectedProduct.id)}
+                                            
+                                            <div className="review-form">
+                                                <h4 className="form-title">Write a Review</h4>
+                                                <div className="rating-input">
+                                                    {[1, 2, 3, 4, 5].map(star => (
+                                                        <i 
+                                                            key={star}
+                                                            className={`fas fa-star rating-star ${star <= 4 ? 'active' : ''}`}
+                                                        ></i>
+                                                    ))}
+                                                </div>
+                                                <textarea 
+                                                    className="review-textarea"
+                                                    placeholder="Share your thoughts about this product..."
+                                                ></textarea>
+                                                <button className="submit-review">Submit Review</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        );
+                    case 'wishlist':
+                        return (
+                            <div className="container">
+                                <section id="wishlist" className="section">
+                                    <h2 className="section-title">Your Wishlist</h2>
+                                    
+                                    {wishlist.length === 0 ? (
+                                        <div style={{ textAlign: 'center', padding: '2rem' }}>
+                                            <h3>Your wishlist is empty</h3>
+                                            <p style={{ margin: '1rem 0' }}>Save your favorite items here for later</p>
+                                            <button 
+                                                className="btn"
+                                                onClick={() => setCurrentPage('shop')}
+                                            >
+                                                Start Shopping
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <div className="products-grid">
+                                            {productsData
+                                                .filter(product => wishlist.includes(product.id))
+                                                .map(product => (
+                                                    <ProductCard 
+                                                        key={product.id}
+                                                        product={product}
+                                                        onAddToCart={addToCart}
+                                                        onToggleWishlist={toggleWishlist}
+                                                        isInWishlist={true}
+                                                        onViewProduct={() => {
+                                                            setSelectedProduct(product);
+                                                            setCurrentPage('product');
+                                                        }}
+                                                    />
+                                                ))
+                                            }
+                                        </div>
+                                    )}
+                                </section>
+                            </div>
+                        );
+                    case 'cart':
+                        return (
+                            <div className="container">
+                                <section id="cart" className="section">
+                                    <h2 className="section-title">Your Cart</h2>
+                                    
+                                    {cart.length === 0 ? (
+                                        <div style={{ textAlign: 'center', padding: '2rem' }}>
+                                            <h3>Your cart is empty</h3>
+                                            <p style={{ margin: '1rem 0' }}>Start shopping to add items to your cart</p>
+                                            <button 
+                                                className="btn"
+                                                onClick={() => setCurrentPage('shop')}
+                                            >
+                                                Continue Shopping
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            {renderCartItems()}
+                                            
+                                            <div className="coupon-code">
+                                                <input 
+                                                    type="text" 
+                                                    className="coupon-input"
+                                                    placeholder="Coupon Code"
+                                                />
+                                                <button className="apply-coupon">Apply</button>
+                                            </div>
+                                            
+                                            <div className="cart-summary">
+                                                <div className="cart-totals">
+                                                    <div className="cart-total-row">
+                                                        <span className="cart-total-label">Subtotal</span>
+                                                        <span className="cart-total-value">${cartTotal.toFixed(2)}</span>
+                                                    </div>
+                                                    <div className="cart-total-row">
+                                                        <span className="cart-total-label">Shipping</span>
+                                                        <span className="cart-total-value">$5.99</span>
+                                                    </div>
+                                                    <div className="cart-total-row">
+                                                        <span className="cart-total-label">Tax</span>
+                                                        <span className="cart-total-value">${(cartTotal * 0.08).toFixed(2)}</span>
+                                                    </div>
+                                                    <div className="cart-total-row grand-total">
+                                                        <span className="cart-total-label">Total</span>
+                                                        <span className="cart-total-value">${(cartTotal + 5.99 + (cartTotal * 0.08)).toFixed(2)}</span>
+                                                    </div>
+                                                </div>
+                                                
+                                                <button 
+                                                    className="checkout-btn"
+                                                    onClick={() => setCurrentPage('checkout')}
+                                                >
+                                                    Proceed to Checkout
+                                                </button>
+                                            </div>
+                                        </>
+                                    )}
+                                </section>
+                            </div>
+                        );
+                    case 'checkout':
+                        return (
+                            <div className="container">
+                                <section className="section">
+                                    {isOrderComplete ? (
+                                        <div className="order-complete">
+                                            <div className="complete-icon">
+                                                <i className="fas fa-check-circle"></i>
+                                            </div>
+                                            <h2 className="complete-title">Order Complete!</h2>
+                                            <p className="complete-text">
+                                                Thank you for your purchase. Your order has been received and is being processed. 
+                                                You will receive a confirmation email shortly.
+                                            </p>
+                                            <button 
+                                                className="btn"
+                                                onClick={() => {
+                                                    setCurrentPage('home');
+                                                    setIsOrderComplete(false);
+                                                    setCheckoutStep(1);
+                                                }}
+                                            >
+                                                Continue Shopping
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            {renderCheckoutSteps()}
+                                            
+                                            <div className="checkout-form">
+                                                {checkoutStep === 1 && (
+                                                    <div className="form-section">
+                                                        <h3 className="section-title">Contact Information</h3>
+                                                        <div className="form-row">
+                                                            <div className="form-col">
+                                                                <label>First Name</label>
+                                                                <input type="text" className="form-input" />
+                                                            </div>
+                                                            <div className="form-col">
+                                                                <label>Last Name</label>
+                                                                <input type="text" className="form-input" />
+                                                            </div>
+                                                        </div>
+                                                        <div className="form-group">
+                                                            <label>Email</label>
+                                                            <input type="email" className="form-input" />
+                                                        </div>
+                                                        <div className="form-group">
+                                                            <label>Phone</label>
+                                                            <input type="tel" className="form-input" />
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                
+                                                {checkoutStep === 2 && (
+                                                    <div className="form-section">
+                                                        <h3 className="section-title">Shipping Address</h3>
+                                                        <div className="form-group">
+                                                            <label>Address</label>
+                                                            <input type="text" className="form-input" />
+                                                        </div>
+                                                        <div className="form-group">
+                                                            <label>Apartment, Suite, etc. (Optional)</label>
+                                                            <input type="text" className="form-input" />
+                                                        </div>
+                                                        <div className="form-row">
+                                                            <div className="form-col">
+                                                                <label>City</label>
+                                                                <input type="text" className="form-input" />
+                                                            </div>
+                                                            <div className="form-col">
+                                                                <label>Country</label>
+                                                                <select className="form-input">
+                                                                    <option>United States</option>
+                                                                    <option>Canada</option>
+                                                                    <option>United Kingdom</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div className="form-row">
+                                                            <div className="form-col">
+                                                                <label>State/Province</label>
+                                                                <input type="text" className="form-input" />
+                                                            </div>
+                                                            <div className="form-col">
+                                                                <label>Postal Code</label>
+                                                                <input type="text" className="form-input" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                
+                                                {checkoutStep === 3 && (
+                                                    <div className="form-section">
+                                                        <h3 className="section-title">Payment Method</h3>
+                                                        {renderPaymentMethods()}
+                                                        
+                                                        {paymentMethod === 'credit' && (
+                                                            <div className="payment-details">
+                                                                <div className="form-group">
+                                                                    <label>Card Number</label>
+                                                                    <input type="text" className="form-input" placeholder="1234 5678 9012 3456" />
+                                                                </div>
+                                                                <div className="form-group">
+                                                                    <label>Name on Card</label>
+                                                                    <input type="text" className="form-input" />
+                                                                </div>
+                                                                <div className="form-row">
+                                                                    <div className="form-col">
+                                                                        <label>Expiration Date</label>
+                                                                        <input type="text" className="form-input" placeholder="MM/YY" />
+                                                                    </div>
+                                                                    <div className="form-col">
+                                                                        <label>Security Code</label>
+                                                                        <input type="text" className="form-input" placeholder="CVC" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                        
+                                                        {paymentMethod === 'paypal' && (
+                                                            <div className="payment-details">
+                                                                <p>You will be redirected to PayPal to complete your payment.</p>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
+                                                
+                                                <div className="order-summary">
+                                                    <h3 className="section-title">Order Summary</h3>
+                                                    {cart.map(item => (
+                                                        <div key={`${item.id}-${item.color}-${item.size}`} className="summary-item">
+                                                            <span>{item.name} ({item.quantity}x)</span>
+                                                            <span>${(item.price * item.quantity).toFixed(2)}</span>
+                                                        </div>
+                                                    ))}
+                                                    <div className="summary-item">
+                                                        <span>Shipping</span>
+                                                        <span>$5.99</span>
+                                                    </div>
+                                                    <div className="summary-item">
+                                                        <span>Tax</span>
+                                                        <span>${(cartTotal * 0.08).toFixed(2)}</span>
+                                                    </div>
+                                                    <div className="summary-item summary-total">
+                                                        <span>Total</span>
+                                                        <span>${(cartTotal + 5.99 + (cartTotal * 0.08)).toFixed(2)}</span>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div className="checkout-actions">
+                                                    {checkoutStep > 1 && (
+                                                        <button 
+                                                            className="back-btn"
+                                                            onClick={() => setCheckoutStep(checkoutStep - 1)}
+                                                        >
+                                                            Back
+                                                        </button>
+                                                    )}
+                                                    
+                                                    {checkoutStep < 3 ? (
+                                                        <button 
+                                                            className="next-btn"
+                                                            onClick={() => setCheckoutStep(checkoutStep + 1)}
+                                                        >
+                                                            Continue to {checkoutStep === 1 ? 'Shipping' : 'Payment'}
+                                                        </button>
+                                                    ) : (
+                                                        <button 
+                                                            className="next-btn"
+                                                            onClick={handleCheckout}
+                                                        >
+                                                            Complete Order
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
+                                </section>
+                            </div>
+                        );
+                    case 'account':
+                        return (
+                            <div className="container">
+                                <section className="section">
+                                    <div className="account-container">
+                                        <div className="account-sidebar">
+                                            <h3>My Account</h3>
+                                            <ul className="account-menu">
+                                                <li>
+                                                    <a 
+                                                        href="#" 
+                                                        className={accountTab === 'orders' ? 'active' : ''}
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            setAccountTab('orders');
+                                                        }}
+                                                    >
+                                                        <i className="fas fa-shopping-bag"></i> Orders
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a 
+                                                        href="#" 
+                                                        className={accountTab === 'wishlist' ? 'active' : ''}
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            setAccountTab('wishlist');
+                                                        }}
+                                                    >
+                                                        <i className="fas fa-heart"></i> Wishlist
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a 
+                                                        href="#" 
+                                                        className={accountTab === 'addresses' ? 'active' : ''}
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            setAccountTab('addresses');
+                                                        }}
+                                                    >
+                                                        <i className="fas fa-map-marker-alt"></i> Addresses
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a 
+                                                        href="#" 
+                                                        className={accountTab === 'payment' ? 'active' : ''}
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            setAccountTab('payment');
+                                                        }}
+                                                    >
+                                                        <i className="fas fa-credit-card"></i> Payment Methods
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a 
+                                                        href="#" 
+                                                        className={accountTab === 'settings' ? 'active' : ''}
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            setAccountTab('settings');
+                                                        }}
+                                                    >
+                                                        <i className="fas fa-user-cog"></i> Account Settings
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a 
+                                                        href="#" 
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            setIsLoggedIn(false);
+                                                            setCurrentPage('home');
+                                                        }}
+                                                    >
+                                                        <i className="fas fa-sign-out-alt"></i> Logout
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        
+                                        <div className="account-content">
+                                            <h2 className="account-title">
+                                                {accountTab === 'orders' && 'My Orders'}
+                                                {accountTab === 'wishlist' && 'My Wishlist'}
+                                                {accountTab === 'addresses' && 'Saved Addresses'}
+                                                {accountTab === 'payment' && 'Payment Methods'}
+                                                {accountTab === 'settings' && 'Account Settings'}
+                                            </h2>
+                                            
+                                            {accountTab === 'orders' && renderAccountOrders()}
+                                            
+                                            {accountTab === 'wishlist' && (
+                                                <div className="products-grid">
+                                                    {productsData
+                                                        .filter(product => wishlist.includes(product.id))
+                                                        .map(product => (
+                                                            <ProductCard 
+                                                                key={product.id}
+                                                                product={product}
+                                                                onAddToCart={addToCart}
+                                                                onToggleWishlist={toggleWishlist}
+                                                                isInWishlist={true}
+                                                                onViewProduct={() => {
+                                                                    setSelectedProduct(product);
+                                                                    setCurrentPage('product');
+                                                                }}
+                                                            />
+                                                        ))
+                                                    }
+                                                </div>
+                                            )}
+                                            
+                                            {accountTab === 'addresses' && (
+                                                <div>
+                                                    <p>No saved addresses yet.</p>
+                                                    <button className="btn" style={{ marginTop: '1rem' }}>
+                                                        Add New Address
+                                                    </button>
+                                                </div>
+                                            )}
+                                            
+                                            {accountTab === 'payment' && (
+                                                <div>
+                                                    <p>No saved payment methods yet.</p>
+                                                    <button className="btn" style={{ marginTop: '1rem' }}>
+                                                        Add Payment Method
+                                                    </button>
+                                                </div>
+                                            )}
+                                            
+                                            {accountTab === 'settings' && (
+                                                <div>
+                                                    <div className="form-group">
+                                                        <label>Full Name</label>
+                                                        <input type="text" className="form-input" value="John Doe" />
+                                                    </div>
+                                                    <div className="form-group">
+                                                        <label>Email</label>
+                                                        <input type="email" className="form-input" value="john@example.com" />
+                                                    </div>
+                                                    <div className="form-group">
+                                                        <label>Phone</label>
+                                                        <input type="tel" className="form-input" value="(123) 456-7890" />
+                                                    </div>
+                                                    <button className="btn" style={{ marginTop: '1rem' }}>
+                                                        Save Changes
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        );
+                    default:
+                        return null;
+                }
+            };
+
+            return (
+                <>
+                    <header>
+                        <div className="header-container">
+                            <a href="#" className="logo" onClick={(e) => { e.preventDefault(); setCurrentPage('home'); }}>
+                                Fashion<span>Hub</span>
+                            </a>
+                            
+                            <button 
+                                className="mobile-menu-btn"
+                                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                            >
+                                <i className={`fas ${isMenuOpen ? 'fa-times' : 'fa-bars'}`}></i>
+                            </button>
+                            
+                            <nav>
+                                <ul className={isMenuOpen ? 'active' : ''}>
+                                    <li>
+                                        <a 
+                                            href="#home" 
+                                            onClick={(e) => { e.preventDefault(); setCurrentPage('home'); setIsMenuOpen(false); }}
+                                        >
+                                            Home
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a 
+                                            href="#shop" 
+                                            onClick={(e) => { e.preventDefault(); setCurrentPage('shop'); setIsMenuOpen(false); }}
+                                        >
+                                            Shop
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a 
+                                            href="#wishlist" 
+                                            onClick={(e) => { e.preventDefault(); setCurrentPage('wishlist'); setIsMenuOpen(false); }}
+                                        >
+                                            Wishlist
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a 
+                                            href="#cart" 
+                                            onClick={(e) => { e.preventDefault(); setCurrentPage('cart'); setIsMenuOpen(false); }}
+                                        >
+                                            Cart
+                                        </a>
+                                    </li>
+                                    {isLoggedIn ? (
+                                        <li>
+                                            <a 
+                                                href="#account" 
+                                                onClick={(e) => { e.preventDefault(); setCurrentPage('account'); setIsMenuOpen(false); }}
+                                            >
+                                                Account
+                                            </a>
+                                        </li>
+                                    ) : (
+                                        <li>
+                                            <a 
+                                                href="#login" 
+                                                onClick={(e) => { e.preventDefault(); setIsAuthOpen(true); setIsMenuOpen(false); }}
+                                            >
+                                                Login
+                                            </a>
+                                        </li>
+                                    )}
+                                </ul>
+                            </nav>
+                            
+                            <div className="header-actions">
+                                <button 
+                                    className="wishlist-icon"
+                                    onClick={() => setCurrentPage('wishlist')}
+                                    style={{ background: 'none', border: 'none', color: 'white', fontSize: '1.2rem', marginRight: '1rem' }}
+                                >
+                                    <i className="fas fa-heart"></i>
+                                    {wishlist.length > 0 && (
+                                        <span className="wishlist-count">{wishlist.length}</span>
+                                    )}
+                                </button>
+                                
+                                <button 
+                                    className="cart-icon"
+                                    onClick={() => setIsCartOpen(true)}
+                                    style={{ background: 'none', border: 'none', color: 'white', fontSize: '1.2rem', position: 'relative' }}
+                                >
+                                    <i className="fas fa-shopping-cart"></i>
+                                    {cart.length > 0 && (
+                                        <span style={{
+                                            position: 'absolute',
+                                            top: '-8px',
+                                            right: '-8px',
+                                            backgroundColor: 'var(--secondary)',
+                                            color: 'white',
+                                            width: '20px',
+                                            height: '20px',
+                                            borderRadius: '50%',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            fontSize: '0.7rem',
+                                            fontWeight: '600'
+                                        }}>
+                                            {cart.reduce((total, item) => total + item.quantity, 0)}
+                                        </span>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    </header>
+                    
+                    {renderPageContent()}
+                    
+                    <footer>
+                        <div className="footer-container">
+                            <div className="footer-col">
+                                <h3>FashionHub</h3>
+                                <p style={{ color: '#ddd', marginBottom: '1rem' }}>
+                                    Your one-stop shop for the latest fashion trends and styles.
+                                </p>
+                                <div className="social-links">
+                                    <a href="#" className="social-link"><i className="fab fa-facebook-f"></i></a>
+                                    <a href="#" className="social-link"><i className="fab fa-twitter"></i></a>
+                                    <a href="#" className="social-link"><i className="fab fa-instagram"></i></a>
+                                    <a href="#" className="social-link"><i className="fab fa-pinterest-p"></i></a>
+                                </div>
+                            </div>
+                            
+                            <div className="footer-col">
+                                <h3>Quick Links</h3>
+                                <ul className="footer-links">
+                                    <li><a href="#">Home</a></li>
+                                    <li><a href="#">Shop</a></li>
+                                    <li><a href="#">About Us</a></li>
+                                    <li><a href="#">Contact</a></li>
+                                    <li><a href="#">Blog</a></li>
+                                </ul>
+                            </div>
+                            
+                            <div className="footer-col">
+                                <h3>Customer Service</h3>
+                                <ul className="footer-links">
+                                    <li><a href="#">My Account</a></li>
+                                    <li><a href="#">Order Tracking</a></li>
+                                    <li><a href="#">Wishlist</a></li>
+                                    <li><a href="#">Shipping Policy</a></li>
+                                    <li><a href="#">Returns & Refunds</a></li>
+                                </ul>
+                            </div>
+                            
+                            <div className="footer-col">
+                                <h3>Newsletter</h3>
+                                <p style={{ color: '#ddd', marginBottom: '1rem' }}>
+                                    Subscribe to our newsletter for the latest updates and offers.
+                                </p>
+                                <input 
+                                    type="email" 
+                                    className="newsletter-input"
+                                    placeholder="Your email address"
+                                />
+                                <button className="newsletter-btn">Subscribe</button>
+                            </div>
+                        </div>
+                        
+                        <div className="copyright">
+                            &copy; 2023 FashionHub. All rights reserved.
+                        </div>
+                    </footer>
+                    
+                    {/* Cart Sidebar */}
+                    <div className={`cart-sidebar ${isCartOpen ? 'open' : ''}`}>
+                        <div className="cart-header">
+                            <div className="cart-title">Your Cart</div>
+                            <button className="close-cart" onClick={() => setIsCartOpen(false)}>
+                                <i className="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <div className="cart-items">
+                            {renderCartItems()}
+                        </div>
+                        
+                        {cart.length > 0 && (
+                            <div className="cart-summary">
+                                <div className="cart-totals">
+                                    <div className="cart-total-row">
+                                        <span className="cart-total-label">Subtotal</span>
+                                        <span className="cart-total-value">${cartTotal.toFixed(2)}</span>
+                                    </div>
+                                    <div className="cart-total-row">
+                                        <span className="cart-total-label">Shipping</span>
+                                        <span className="cart-total-value">$5.99</span>
+                                    </div>
+                                    <div className="cart-total-row">
+                                        <span className="cart-total-label">Tax</span>
+                                        <span className="cart-total-value">${(cartTotal * 0.08).toFixed(2)}</span>
+                                    </div>
+                                    <div className="cart-total-row grand-total">
+                                        <span className="cart-total-label">Total</span>
+                                        <span className="cart-total-value">${(cartTotal + 5.99 + (cartTotal * 0.08)).toFixed(2)}</span>
+                                    </div>
+                                </div>
+                                
+                                <button 
+                                    className="checkout-btn"
+                                    onClick={() => {
+                                        setIsCartOpen(false);
+                                        setCurrentPage('checkout');
+                                    }}
+                                >
+                                    Proceed to Checkout
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                    
+                    {/* Auth Modal */}
+                    <div className={`auth-modal ${isAuthOpen ? 'active' : ''}`}>
+                        <div className="auth-header">
+                            <div className="auth-title">
+                                {authTab === 'login' ? 'Login' : 'Create Account'}
+                            </div>
+                            <button className="close-auth" onClick={() => setIsAuthOpen(false)}>
+                                <i className="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <div className="auth-tabs">
+                            <button 
+                                className={`auth-tab ${authTab === 'login' ? 'active' : ''}`}
+                                onClick={() => setAuthTab('login')}
+                            >
+                                Login
+                            </button>
+                            <button 
+                                className={`auth-tab ${authTab === 'register' ? 'active' : ''}`}
+                                onClick={() => setAuthTab('register')}
+                            >
+                                Register
+                            </button>
+                        </div>
+                        
+                        <form className="auth-form">
+                            {authTab === 'register' && (
+                                <div className="form-row">
+                                    <div className="form-col">
+                                        <div className="form-group">
+                                            <label className="form-label">First Name</label>
+                                            <input type="text" className="form-input" />
+                                        </div>
+                                    </div>
+                                    <div className="form-col">
+                                        <div className="form-group">
+                                            <label className="form-label">Last Name</label>
+                                            <input type="text" className="form-input" />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                            
+                            <div className="form-group">
+                                <label className="form-label">Email</label>
+                                <input type="email" className="form-input" />
+                            </div>
+                            
+                            <div className="form-group">
+                                <label className="form-label">Password</label>
+                                <input type="password" className="form-input" />
+                            </div>
+                            
+                            {authTab === 'register' && (
+                                <div className="form-group">
+                                    <label className="form-label">Confirm Password</label>
+                                    <input type="password" className="form-input" />
+                                </div>
+                            )}
+                            
+                            <button 
+                                type="button" 
+                                className="auth-submit"
+                                onClick={() => {
+                                    setIsAuthOpen(false);
+                                    setIsLoggedIn(true);
+                                }}
+                            >
+                                {authTab === 'login' ? 'Login' : 'Create Account'}
+                            </button>
+                            
+                            <div className="social-login">
+                                <button type="button" className="social-btn facebook-btn">
+                                    <i className="fab fa-facebook-f"></i>
+                                    Continue with Facebook
+                                </button>
+                                <button type="button" className="social-btn google-btn">
+                                    <i className="fab fa-google"></i>
+                                    Continue with Google
+                                </button>
+                            </div>
+                            
+                            <div className="auth-footer">
+                                {authTab === 'login' ? (
+                                    <>
+                                        Don't have an account?{' '}
+                                        <span 
+                                            className="auth-switch"
+                                            onClick={() => setAuthTab('register')}
+                                        >
+                                            Register
+                                        </span>
+                                    </>
+                                ) : (
+                                    <>
+                                        Already have an account?{' '}
+                                        <span 
+                                            className="auth-switch"
+                                            onClick={() => setAuthTab('login')}
+                                        >
+                                            Login
+                                        </span>
+                                    </>
+                                )}
+                            </div>
+                        </form>
+                    </div>
+                    
+                    {/* Image Zoom */}
+                    <div className={`image-zoom-container ${isZoomOpen ? 'active' : ''}`}>
+                        <img src={zoomedImage} alt="Zoomed product" className="zoomed-image" />
+                        <button className="close-zoom" onClick={() => setIsZoomOpen(false)}>
+                            <i className="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    {/* Overlay */}
+                    <div 
+                        className={`overlay ${isCartOpen || isAuthOpen || isZoomOpen ? 'active' : ''}`}
+                        onClick={() => {
+                            setIsCartOpen(false);
+                            setIsAuthOpen(false);
+                            setIsZoomOpen(false);
+                        }}
+                    ></div>
+                </>
+            );
+        }
+
+        // Product Card Component
+        function ProductCard({ product, onAddToCart, onToggleWishlist, isInWishlist, onViewProduct }) {
+            const [selectedColor, setSelectedColor] = useState(product.colors[0]);
+            const [selectedSize, setSelectedSize] = useState(product.sizes[0]);
+            const [currentImage, setCurrentImage] = useState(0);
+            
+            return (
+                <div className="product-card">
+                    <div className="product-image">
+                        {product.oldPrice && (
+                            <span className="product-badge">Sale</span>
+                        )}
+                        
+                        <div className="product-actions">
+                            <button 
+                                className="product-action-btn"
+                                onClick={() => onToggleWishlist(product.id)}
+                            >
+                                <i className={`fas fa-heart ${isInWishlist ? 'text-danger' : ''}`}></i>
+                            </button>
+                        </div>
+                        
+                        <img 
+                            src={product.images[currentImage]} 
+                            alt={product.name}
+                            onClick={onViewProduct}
+                        />
+                    </div>
+                    
+                    <div className="product-info">
+                        <span className="product-category">{product.category}</span>
+                        <h3 className="product-title" onClick={onViewProduct} style={{ cursor: 'pointer' }}>
+                            {product.name}
+                        </h3>
+                        
+                        <div className="product-price">
+                            <span className="current-price">${product.price.toFixed(2)}</span>
+                            {product.oldPrice && (
+                                <span className="old-price">${product.oldPrice.toFixed(2)}</span>
+                            )}
+                        </div>
+                        
+                        <div className="product-rating">
+                            <div className="stars">
+                                {Array(5).fill(0).map((_, i) => (
+                                    <i 
+                                        key={i} 
+                                        className={`fas fa-star ${i < Math.floor(product.rating) ? 'text-warning' : ''}`}
+                                    ></i>
+                                ))}
+                            </div>
+                            <span className="rating-count">({product.reviews})</span>
+                        </div>
+                        
+                        <div className="product-variants">
+                            {product.colors.map(color => (
+                                <button 
+                                    key={color}
+                                    className={`variant-btn color-${color} ${color === selectedColor ? 'active' : ''}`}
+                                    title={color}
+                                    onClick={() => setSelectedColor(color)}
+                                ></button>
+                            ))}
+                        </div>
+                        
+                        <div className="product-variants" style={{ marginTop: '0.5rem' }}>
+                            {product.sizes.map(size => (
+                                <button 
+                                    key={size}
+                                    className={`size-btn ${size === selectedSize ? 'active' : ''}`}
+                                    onClick={() => setSelectedSize(size)}
+                                >
+                                    {size}
+                                </button>
+                            ))}
+                        </div>
+                        
+                        <button 
+                            className="add-to-cart"
+                            onClick={() => onAddToCart(product, selectedColor, selectedSize)}
+                        >
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        // Render the app
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
